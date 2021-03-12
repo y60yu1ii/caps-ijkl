@@ -4,10 +4,12 @@ build:
 	cargo build --release
 
 install: build
-	sudo install target/release/c-hjkl /usr/local/bin
-	sudo install systemd/c-hjkl.service /etc/systemd/system
-	sudo systemctl daemon-reload
+	sudo install target/release/caps-ijkl /usr/local/bin
+	sudo install systemd/caps-ijkl.service /etc/systemd/system
+	sudo systemctl enable caps-ijkl
+	sudo systemctl start caps-ijkl
 
 uninstall:
-	sudo rm -f /usr/local/bin/c-hjkl /etc/systemd/system/c-hjkl.service
-	sudo systemctl daemon-reload
+	sudo rm -f /usr/local/bin/caps-ijkl /etc/systemd/system/caps-ijkl.service
+	sudo systemctl stop caps-ijkl
+	sudo systemctl disable caps-ijkl

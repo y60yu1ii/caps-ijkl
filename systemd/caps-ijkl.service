@@ -1,8 +1,8 @@
 [Unit]
-Description=Override C-hjkl to Arrow Keys
+Description=Override Caps+IJKL to Arrow Keys
 
 [Service]
-ExecStart=/usr/local/bin/c-hjkl
+ExecStart=/usr/local/bin/caps-ijkl
 RestartForceExitStatus=2
 
 [Install]

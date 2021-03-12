@@ -1,5 +1,5 @@
 [package]
-name = "c-hjkl"
+name = "caps-ijkl"
 version = "0.1.0"
 authors = ["Stewart Park <hello@stewartjpark.com>"]
 edition = "2018"

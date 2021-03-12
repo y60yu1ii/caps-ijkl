@@ -1,19 +1,8 @@
 use libc::{c_char, c_void, input_event, ioctl, open, read, O_RDONLY};
 
-const EVIOCGRAB: u64 = 1074021776;
+use super::event_codes::*;
 
-// From linux/input-event-codes.h
-const EV_KEY: u16 = 0x01;
-const KEY_LEFTCTRL: u16 = 29;
-const KEY_CAPSLOCK: u16 = 58;
-const KEY_H: u16 = 35;
-const KEY_J: u16 = 36;
-const KEY_K: u16 = 37;
-const KEY_L: u16 = 38;
-const KEY_UP: u16 = 103;
-const KEY_LEFT: u16 = 105;
-const KEY_RIGHT: u16 = 106;
-const KEY_DOWN: u16 = 108;
+const EVIOCGRAB: u64 = 1074021776;
 
 pub struct KeyboardHandler {
     fd: i32,
@@ -86,7 +75,7 @@ impl KeyboardHandler {
     }
 
     pub fn run_forever(&mut self) {
-        let mut ctrl_pressed = false;
+        let mut caps = false;
 
         std::thread::sleep(std::time::Duration::from_secs(1));
 
@@ -96,51 +85,32 @@ impl KeyboardHandler {
 
             if self.debug {
                 println!(
-                    "[{}] ctrl:{}, ev: {} {} {}",
-                    self.device_path, ctrl_pressed, input.type_, input.code, input.value
+                    "[{}] caps: {}, ev: {} {} {}",
+                    self.device_path, caps, input.type_, input.code, input.value
                 );
             }
 
-            // Handle Capslock / Ctrl
-            if input.type_ == EV_KEY && input.code == KEY_CAPSLOCK {
-                input.code = KEY_LEFTCTRL;
+            if input.code == KEY_CAPSLOCK {
+                caps = input.value != 0;
+                continue;
             }
 
-            // Maintain Ctrl flag
-            if input.type_ == EV_KEY && input.code == KEY_LEFTCTRL {
-                ctrl_pressed = input.value != 0;
-            }
-
-            // Handle C-hjkl
-            if input.type_ == EV_KEY && input.value >= 1 && ctrl_pressed {
-                let key_to_press = if input.code == KEY_H {
-                    KEY_LEFT
-                } else if input.code == KEY_J {
-                    KEY_DOWN
-                } else if input.code == KEY_K {
-                    KEY_UP
-                } else if input.code == KEY_L {
-                    KEY_RIGHT
-                } else {
-                    0
+            if caps {
+                let key_to_press = match input.code {
+                    KEY_I => Some(KEY_UP),
+                    KEY_J => Some(KEY_LEFT),
+                    KEY_K => Some(KEY_DOWN),
+                    KEY_L => Some(KEY_RIGHT),
+                    KEY_U => Some(KEY_HOME),
+                    KEY_O => Some(KEY_END),
+                    KEY_BACKSPACE => Some(KEY_DELETE),
+                    KEY_SPACE => Some(KEY_CAPSLOCK),
+                    _ => None,
                 };
 
-                if key_to_press > 0 {
-                    input.value = 0;
-                    input.code = KEY_LEFTCTRL;
-                    self.write(&input);
-
+                if let Some(key_to_press) = key_to_press {
                     input.code = key_to_press;
-                    input.value = 1;
                     self.write(&input);
-
-                    input.value = 0;
-                    self.write(&input);
-
-                    input.value = 1;
-                    input.code = KEY_LEFTCTRL;
-                    self.write(&input);
-
                     continue;
                 }
             }
