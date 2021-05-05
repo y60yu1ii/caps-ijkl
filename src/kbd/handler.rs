@@ -80,6 +80,9 @@ impl KeyboardHandler {
         std::thread::sleep(std::time::Duration::from_secs(1));
 
         self.grab();
+
+        let mut caps_keys = Vec::new();
+
         loop {
             let mut input = self.read();
 
@@ -92,6 +95,18 @@ impl KeyboardHandler {
 
             if input.code == KEY_CAPSLOCK {
                 caps = input.value != 0;
+
+                if input.value == 0 {
+                    for x in caps_keys.drain(..) {
+                        self.write(&input_event {
+                            time: input.time,
+                            type_: 1,
+                            code: x,
+                            value: 0,
+                        });
+                    }
+                }
+
                 continue;
             }
 
@@ -104,11 +119,16 @@ impl KeyboardHandler {
                     KEY_U => Some(KEY_HOME),
                     KEY_O => Some(KEY_END),
                     KEY_BACKSPACE => Some(KEY_DELETE),
-                    KEY_SPACE => Some(KEY_CAPSLOCK),
                     _ => None,
                 };
 
                 if let Some(key_to_press) = key_to_press {
+                    if input.value != 0 {
+                        caps_keys.push(key_to_press);
+                    } else {
+                        caps_keys.retain(|x| *x != key_to_press);
+                    }
+
                     input.code = key_to_press;
                     self.write(&input);
                     continue;

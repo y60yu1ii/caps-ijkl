@@ -113,15 +113,3 @@ fn parse_proc_bus_input_devices(contents: &String) -> Vec<Keyboard> {
         .collect::<Vec<Keyboard>>();
     keyboards
 }
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn it_works() {
-        let test_txt = include_str!("proc_bus_input_devices.txt").to_string();
-        let keyboards = parse_proc_bus_input_devices(&test_txt);
-        assert_eq!(keyboards.len(), 2);
-    }
-}
