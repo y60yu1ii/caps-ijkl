@@ -23,7 +23,7 @@ impl KeyboardHandler {
             KeyboardHandler {
                 device_path: device_path.to_string(),
                 is_grabbed: false,
-                uinput: uinput::default()
+                uinput: uinput::open("/dev/uinput")
                     .unwrap()
                     .name(format!("C-HJKL Output for {}", device_path))
                     .unwrap()
@@ -82,6 +82,7 @@ impl KeyboardHandler {
         self.grab();
 
         let mut caps_keys = Vec::new();
+        let mut other_keys = Vec::new();
 
         loop {
             let mut input = self.read();
@@ -110,7 +111,7 @@ impl KeyboardHandler {
                 continue;
             }
 
-            if caps {
+            if caps && !other_keys.contains(&input.code) {
                 let key_to_press = match input.code {
                     KEY_I => Some(KEY_UP),
                     KEY_J => Some(KEY_LEFT),
@@ -123,11 +124,7 @@ impl KeyboardHandler {
                 };
 
                 if let Some(key_to_press) = key_to_press {
-                    if input.value != 0 {
-                        caps_keys.push(key_to_press);
-                    } else {
-                        caps_keys.retain(|x| *x != key_to_press);
-                    }
+                    add_or_remove_key(&mut caps_keys, input.value, key_to_press);
 
                     input.code = key_to_press;
                     self.write(&input);
@@ -136,7 +133,16 @@ impl KeyboardHandler {
             }
 
             // Pass-through
+            add_or_remove_key(&mut other_keys, input.value, input.code);
             self.write(&input);
         }
+    }
+}
+
+fn add_or_remove_key(keys: &mut Vec<u16>, value: i32, code: u16) {
+    if value != 0 {
+        keys.push(code);
+    } else {
+        keys.retain(|x| *x != code);
     }
 }
