@@ -119,6 +119,8 @@ impl KeyboardHandler {
                     KEY_L => Some(KEY_RIGHT),
                     KEY_U => Some(KEY_HOME),
                     KEY_O => Some(KEY_END),
+                    KEY_P => Some(KEY_PAGEUP),
+                    KEY_SEMICOLON => Some(KEY_PAGEDOWN),
                     KEY_BACKSPACE => Some(KEY_DELETE),
                     _ => None,
                 };
