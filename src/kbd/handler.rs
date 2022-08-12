@@ -122,6 +122,18 @@ impl KeyboardHandler {
                     KEY_P => Some(KEY_PAGEUP),
                     KEY_SEMICOLON => Some(KEY_PAGEDOWN),
                     KEY_BACKSPACE => Some(KEY_DELETE),
+                    KEY_1 => Some(KEY_F1),
+                    KEY_2 => Some(KEY_F2),
+                    KEY_3 => Some(KEY_F3),
+                    KEY_4 => Some(KEY_F4),
+                    KEY_5 => Some(KEY_F5),
+                    KEY_6 => Some(KEY_F6),
+                    KEY_7 => Some(KEY_F7),
+                    KEY_8 => Some(KEY_F8),
+                    KEY_9 => Some(KEY_F9),
+                    KEY_0 => Some(KEY_F10),
+                    KEY_MINUS => Some(KEY_F11),
+                    KEY_EQUAL => Some(KEY_F12),
                     _ => None,
                 };
 
