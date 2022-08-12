@@ -1,4 +1,6 @@
-use libc::{c_char, c_void, input_event, ioctl, open, read, O_RDONLY};
+use std::ffi::CString;
+
+use libc::{c_void, input_event, ioctl, open, read, O_RDONLY};
 
 use super::event_codes::*;
 
@@ -13,9 +15,10 @@ pub struct KeyboardHandler {
 }
 
 impl KeyboardHandler {
-    pub fn new(device_path: &String, debug: bool) -> KeyboardHandler {
+    pub fn new(device_path: &str, debug: bool) -> KeyboardHandler {
         unsafe {
-            let fd = open(device_path[..].as_ptr() as *const c_char, O_RDONLY);
+            let c_str = CString::new(device_path).unwrap();
+            let fd = open(c_str.as_ptr(), O_RDONLY);
             if fd == -1 {
                 panic!("Cannot open input device: {}", device_path);
             }
