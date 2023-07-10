@@ -124,6 +124,8 @@ impl KeyboardHandler {
                     KEY_O => Some(KEY_END),
                     KEY_P => Some(KEY_PAGEUP),
                     KEY_SEMICOLON => Some(KEY_PAGEDOWN),
+                    KEY_A => Some(KEY_LEFTSHIFT),
+                    KEY_D => Some(KEY_LEFTCTRL),
                     KEY_BACKSPACE => Some(KEY_DELETE),
                     KEY_1 => Some(KEY_F1),
                     KEY_2 => Some(KEY_F2),
@@ -139,6 +141,7 @@ impl KeyboardHandler {
                     KEY_EQUAL => Some(KEY_F12),
                     _ => None,
                 };
+                // println!("{:?} => {:?}", input.code, key_to_press);
 
                 if let Some(key_to_press) = key_to_press {
                     add_or_remove_key(&mut caps_keys, input.value, key_to_press);
