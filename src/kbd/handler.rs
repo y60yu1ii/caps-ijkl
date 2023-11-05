@@ -116,16 +116,14 @@ impl KeyboardHandler {
 
             if caps && !other_keys.contains(&input.code) {
                 let key_to_press = match input.code {
-                    KEY_I => Some(KEY_UP),
-                    KEY_J => Some(KEY_LEFT),
-                    KEY_K => Some(KEY_DOWN),
+                    KEY_K => Some(KEY_UP),
+                    KEY_H => Some(KEY_LEFT),
+                    KEY_J => Some(KEY_DOWN),
                     KEY_L => Some(KEY_RIGHT),
                     KEY_U => Some(KEY_HOME),
                     KEY_O => Some(KEY_END),
                     KEY_P => Some(KEY_PAGEUP),
                     KEY_SEMICOLON => Some(KEY_PAGEDOWN),
-                    KEY_A => Some(KEY_LEFTSHIFT),
-                    KEY_D => Some(KEY_LEFTCTRL),
                     KEY_BACKSPACE => Some(KEY_DELETE),
                     KEY_1 => Some(KEY_F1),
                     KEY_2 => Some(KEY_F2),
